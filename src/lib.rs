@@ -1,19 +1,29 @@
 /// Functions for efficiently working with Fibonacci numbers
+///
+/// The Fibonacci series is the series of numbers where each number
+/// is the sum of the two preceding numbers, starting with:
+///
+///     F_0, F_1 = 0, 1
 /// 
+/// This gives the sequence 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, ...
+/// 
+/// ## Warning:
+///
 /// The emphasis of the functions are to work on large
-/// (numbers that won't fit into u64 types) Fibonacci numbers,
+/// (numbers that won't fit into u64 type) Fibonacci numbers,
 /// due to this constraint a BigUint implementation is used.
 /// This will lead to inefficiency for numbers that could fit
 /// into an u64 type.
-
-
 use num_bigint::BigUint;
 use num_traits::{One, Zero};
 
 /// Multiply lhs by rhs
-/// 
+///
 /// Both lhs and rhs must be flattened, row major, 2x2 matrices
 fn matrix_multiply_2x2(lhs: &[BigUint; 4], rhs: &[BigUint; 4]) -> [BigUint; 4] {
+    // TODO: Optimise?
+    //       For Fibonacci matrices ``a12`` and ``a21`` will always be the same,
+    //       we can calculate this once and use the same result.
     let a11 = &lhs[0] * &rhs[0] + &lhs[1] * &rhs[2];
     let a12 = &lhs[0] * &rhs[1] + &lhs[1] * &rhs[3];
     let a21 = &lhs[2] * &rhs[0] + &lhs[3] * &rhs[2];
@@ -22,7 +32,7 @@ fn matrix_multiply_2x2(lhs: &[BigUint; 4], rhs: &[BigUint; 4]) -> [BigUint; 4] {
 }
 
 /// Raise ``matrix`` to the power of ``n``
-/// 
+///
 /// The matrix must be a flattened, row major 2x2 matrix
 fn matrix_power_2x2(matrix: &[BigUint; 4], n: usize) -> [BigUint; 4] {
     match n {
@@ -53,8 +63,8 @@ fn matrix_power_2x2(matrix: &[BigUint; 4], n: usize) -> [BigUint; 4] {
 
 /// # Compute the nth Fibonacci number
 ///
-/// This function uses the matrix power approach to calculate the nth Fibonacci number
-/// in O(log n) time complexity. The function allows for the computation of very large
+/// ``nth_fibonacci`` uses the matrix power approach to calculate the nth Fibonacci number
+/// in O(log n) time. ``nth_fibonacci`` allows for the computation of arbitrarily large
 /// Fibonacci numbers due to using arbitrary sized unsigned integers. This comes with
 /// a slight performance penalty for Fibonacci numbers that could fit into an u64 type.
 ///
@@ -77,7 +87,9 @@ pub fn nth_fibonacci(n: usize) -> BigUint {
                 BigUint::one(),
                 BigUint::zero(),
             ];
-            let fib_matrix = matrix_power_2x2(&fibonacci_base, n - 1);
+            // We only need an exponent of n - 1 as the matrix contains F_{n+1}
+            let exp = n - 1;
+            let fib_matrix = matrix_power_2x2(&fibonacci_base, exp);
             fib_matrix[0].clone()
         }
     }
