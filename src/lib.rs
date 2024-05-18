@@ -1,6 +1,5 @@
 use num_bigint::BigUint;
-use num_traits::{Zero, One};
-
+use num_traits::{One, Zero};
 
 /// Multiply lhs by rhs
 /// Both lhs and rhs must be flattened, row major, 2x2 matrices
@@ -17,14 +16,22 @@ fn matrix_multiply_2x2(lhs: &[BigUint; 4], rhs: &[BigUint; 4]) -> [BigUint; 4] {
 fn matrix_power_2x2(matrix: &[BigUint; 4], n: usize) -> [BigUint; 4] {
     match n {
         // any matrix to the power of 0 is the identity matrix.
-        0 => [BigUint::one(), BigUint::zero(), BigUint::zero(), BigUint::one()],
+        0 => [
+            BigUint::one(),
+            BigUint::zero(),
+            BigUint::zero(),
+            BigUint::one(),
+        ],
         // any matrix to the power of 1 is itself.
         1 => matrix.clone(),
         _ => {
             let matrix_squared = matrix_multiply_2x2(&matrix, &matrix);
             let n_div_2 = n / 2;
-            if n % 2 == 0 { matrix_power_2x2(&matrix_squared, n_div_2) }
-            else { matrix_multiply_2x2(&matrix, &matrix_power_2x2(&matrix_squared, n_div_2) )}
+            if n % 2 == 0 {
+                matrix_power_2x2(&matrix_squared, n_div_2)
+            } else {
+                matrix_multiply_2x2(&matrix, &matrix_power_2x2(&matrix_squared, n_div_2))
+            }
         }
     }
 }
@@ -46,12 +53,16 @@ fn matrix_power_2x2(matrix: &[BigUint; 4], n: usize) -> [BigUint; 4] {
 /// assert_eq!(nth_fib, 23_416_728_348_467_685i64.to_biguint().unwrap())
 /// ```
 pub fn nth_fibonacci(n: usize) -> BigUint {
-    let fibonacci_base = [BigUint::one(), BigUint::one(), BigUint::one(), BigUint::zero()];
-
     match n {
-        0 => { BigUint::zero() },
+        0 => BigUint::zero(),
         _ => {
-            let fib_matrix = matrix_power_2x2(&fibonacci_base, n-1);
+            let fibonacci_base = [
+                BigUint::one(),
+                BigUint::one(),
+                BigUint::one(),
+                BigUint::zero(),
+            ];
+            let fib_matrix = matrix_power_2x2(&fibonacci_base, n - 1);
             fib_matrix[0].clone()
         }
     }
@@ -59,8 +70,8 @@ pub fn nth_fibonacci(n: usize) -> BigUint {
 
 #[cfg(test)]
 mod tests {
-    use num_bigint::ToBigUint;
     use super::*;
+    use num_bigint::ToBigUint;
 
     #[test]
     fn test_small_fib_0() {
