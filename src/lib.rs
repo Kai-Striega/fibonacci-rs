@@ -65,7 +65,7 @@ fn matrix_power_2x2(matrix: &[BigUint; 4], n: usize) -> [BigUint; 4] {
 /// use fibonacci::nth_fibonacci;
 /// let n = 80;
 /// let nth_fib = nth_fibonacci(n);
-/// assert_eq!(nth_fib, 23_416_728_348_467_685i64.to_biguint().unwrap())
+/// assert_eq!(nth_fib, 23_416_728_348_467_685u64.to_biguint().unwrap())
 /// ```
 pub fn nth_fibonacci(n: usize) -> BigUint {
     match n {
@@ -115,6 +115,6 @@ mod tests {
     #[test]
     fn test_large_fib_80() {
         let result = nth_fibonacci(80);
-        assert_eq!(result, 23_416_728_348_467_685i64.to_biguint().unwrap());
+        assert_eq!(result, 23_416_728_348_467_685u64.to_biguint().unwrap());
     }
 }
