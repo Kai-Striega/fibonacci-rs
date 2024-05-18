@@ -1,7 +1,17 @@
+/// Functions for efficiently working with Fibonacci numbers
+/// 
+/// The emphasis of the functions are to work on large
+/// (numbers that won't fit into u64 types) Fibonacci numbers,
+/// due to this constraint a BigUint implementation is used.
+/// This will lead to inefficiency for numbers that could fit
+/// into an u64 type.
+
+
 use num_bigint::BigUint;
 use num_traits::{One, Zero};
 
 /// Multiply lhs by rhs
+/// 
 /// Both lhs and rhs must be flattened, row major, 2x2 matrices
 fn matrix_multiply_2x2(lhs: &[BigUint; 4], rhs: &[BigUint; 4]) -> [BigUint; 4] {
     let a11 = &lhs[0] * &rhs[0] + &lhs[1] * &rhs[2];
@@ -12,6 +22,7 @@ fn matrix_multiply_2x2(lhs: &[BigUint; 4], rhs: &[BigUint; 4]) -> [BigUint; 4] {
 }
 
 /// Raise ``matrix`` to the power of ``n``
+/// 
 /// The matrix must be a flattened, row major 2x2 matrix
 fn matrix_power_2x2(matrix: &[BigUint; 4], n: usize) -> [BigUint; 4] {
     match n {
@@ -25,6 +36,10 @@ fn matrix_power_2x2(matrix: &[BigUint; 4], n: usize) -> [BigUint; 4] {
         // any matrix to the power of 1 is itself.
         1 => matrix.clone(),
         _ => {
+            // Here we use exponentiation by squaring for 2x2 matrices
+            // https://en.wikipedia.org/wiki/Exponentiation_by_squaring
+            // TODO: How does Rust handle recursion?
+            // TODO: Would this be faster as an iterative algorithm?
             let matrix_squared = matrix_multiply_2x2(&matrix, &matrix);
             let n_div_2 = n / 2;
             if n % 2 == 0 {
