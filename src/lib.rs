@@ -133,7 +133,7 @@ pub fn is_fibonacci(n: &BigUint) -> bool {
     let five_n_squared = five * n * n;
     let five_n_square_p_four = &five_n_squared + &four;
     let five_n_square_m_four = &five_n_squared - &four;
-    is_perfect_square(&five_n_square_p_four) | is_perfect_square(&five_n_square_m_four)
+    is_perfect_square(&five_n_square_p_four) || is_perfect_square(&five_n_square_m_four)
 }
 
 #[cfg(test)]
