@@ -14,7 +14,7 @@
 /// due to this constraint a BigUint implementation is used.
 /// This will lead to inefficiency for numbers that could fit
 /// into an u64 type.
-use num_bigint::BigUint;
+use num_bigint::{BigUint, ToBigUint};
 use num_traits::{One, Zero};
 
 /// Multiply lhs by rhs
@@ -95,10 +95,50 @@ pub fn nth_fibonacci(n: usize) -> BigUint {
     }
 }
 
+/// Check if a number is a perfect square
+///
+/// A perfect square is an element that is equal to the square of another element
+fn is_perfect_square(n: &BigUint) -> bool {
+    // TODO: Why is * needed before the rhs but not lhs?
+    n.sqrt() * n.sqrt() == *n
+}
+
+/// Check if a number is a Fibonacci number
+///
+/// # Examples
+/// ```
+/// use num_bigint::ToBigUint;
+/// use fibonacci::is_fibonacci;
+///
+/// let n = 55.to_biguint().unwrap();
+/// let is_fib = is_fibonacci(&n);
+/// assert_eq!(is_fib, true);
+///
+/// let n = 56.to_biguint().unwrap();
+/// let is_fib = is_fibonacci(&n);
+/// assert_eq!(is_fib, false);
+/// ```
+pub fn is_fibonacci(n: &BigUint) -> bool {
+    // TODO should these be static?
+    let zero = BigUint::ZERO;
+    let four = 4.to_biguint().unwrap();
+    let five = 5.to_biguint().unwrap();
+
+    if n == &zero {
+        return true;
+    }
+
+    // I don't like defining lots of variables like this,
+    // but couldn't think of a neat way of doing it.
+    let five_n_squared = five * n * n;
+    let five_n_square_p_four = &five_n_squared + &four;
+    let five_n_square_m_four = &five_n_squared - &four;
+    is_perfect_square(&five_n_square_p_four) | is_perfect_square(&five_n_square_m_four)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use num_bigint::ToBigUint;
 
     #[test]
     fn test_small_fib_0() {
@@ -128,5 +168,33 @@ mod tests {
     fn test_large_fib_80() {
         let result = nth_fibonacci(80);
         assert_eq!(result, 23_416_728_348_467_685u64.to_biguint().unwrap());
+    }
+
+    #[test]
+    fn test_zero_is_fib() {
+        let n = BigUint::zero();
+        let is_fib = is_fibonacci(&n);
+        assert_eq!(is_fib, true)
+    }
+
+    #[test]
+    fn test_one_is_fib() {
+        let n = BigUint::one();
+        let is_fib = is_fibonacci(&n);
+        assert_eq!(is_fib, true)
+    }
+
+    #[test]
+    fn test_large_number_is_fib() {
+        let n = nth_fibonacci(80);
+        let is_fib = is_fibonacci(&n);
+        assert_eq!(is_fib, true)
+    }
+
+    #[test]
+    fn test_large_number_is_not_fib() {
+        let n = nth_fibonacci(80) + BigUint::one();
+        let is_fib = is_fibonacci(&n);
+        assert_eq!(is_fib, false)
     }
 }
