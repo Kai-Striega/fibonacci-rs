@@ -3,10 +3,10 @@
 /// The Fibonacci series is the series of numbers where each number
 /// is the sum of the two preceding numbers, starting with:
 ///
-///     F_0, F_1 = 0, 1
-/// 
+/// F_0, F_1 = 0, 1
+///
 /// This gives the sequence 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, ...
-/// 
+///
 /// ## Warning:
 ///
 /// The emphasis of the functions are to work on large
