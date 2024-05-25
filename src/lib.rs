@@ -14,7 +14,7 @@
 /// due to this constraint a BigUint implementation is used.
 /// This will lead to inefficiency for numbers that could fit
 /// into an u64 type.
-use num_bigint::{BigUint, ToBigUint};
+use num_bigint::BigUint;
 use num_traits::{One, Zero};
 
 /// Multiply lhs by rhs
@@ -106,6 +106,7 @@ pub fn nth_fibonacci(n: usize) -> BigUint {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use num_bigint::ToBigUint;
 
     #[test]
     fn test_small_fib_0() {
