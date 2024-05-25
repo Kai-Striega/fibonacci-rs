@@ -1,4 +1,4 @@
-/// Functions for efficiently working with Fibonacci numbers
+/// Function for efficiently calculating large Fibonacci numbers
 ///
 /// The Fibonacci series is the series of numbers where each number
 /// is the sum of the two preceding numbers, starting with:
@@ -9,7 +9,7 @@
 ///
 /// ## Warning:
 ///
-/// The emphasis of the functions are to work on large
+/// The emphasis of this function is to work on large
 /// (numbers that won't fit into u64 type) Fibonacci numbers,
 /// due to this constraint a BigUint implementation is used.
 /// This will lead to inefficiency for numbers that could fit
@@ -27,7 +27,7 @@ where
     &'a T: Mul<Output = T> + Add<Output = T>,
 {
     // TODO: Optimise?
-    //       For Fibonacci matrices ``a12`` and ``a21`` will always be the same,
+    //       Fibonacci matrices ``a12`` and ``a21`` will always be the same,
     //       we can calculate this once and use the same result.
     let a11 = &lhs[0] * &rhs[0] + &lhs[1] * &rhs[2];
     let a12 = &lhs[0] * &rhs[1] + &lhs[1] * &rhs[3];
