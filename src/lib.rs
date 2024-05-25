@@ -16,11 +16,16 @@
 /// into an u64 type.
 use num_bigint::BigUint;
 use num_traits::{One, Zero};
+use std::ops::{Add, Mul};
 
 /// Multiply lhs by rhs
 ///
 /// Both lhs and rhs must be flattened, row major, 2x2 matrices
-fn matrix_multiply_2x2(lhs: &[BigUint; 4], rhs: &[BigUint; 4]) -> [BigUint; 4] {
+fn matrix_multiply_2x2<'a, T>(lhs: &'a [T; 4], rhs: &'a [T; 4]) -> [T; 4]
+where
+    T: Mul<Output = T> + Add<Output = T>,
+    &'a T: Mul<Output = T> + Add<Output = T>,
+{
     // TODO: Optimise?
     //       For Fibonacci matrices ``a12`` and ``a21`` will always be the same,
     //       we can calculate this once and use the same result.
