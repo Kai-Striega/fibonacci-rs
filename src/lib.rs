@@ -46,17 +46,24 @@ fn matrix_power_2x2(matrix: &[BigUint; 4], n: usize) -> [BigUint; 4] {
         // any matrix to the power of 1 is itself.
         1 => matrix.clone(),
         _ => {
-            // Here we use exponentiation by squaring for 2x2 matrices
+            // We use exponentiation by squaring for 2x2 matrices
             // https://en.wikipedia.org/wiki/Exponentiation_by_squaring
-            // TODO: How does Rust handle recursion?
-            // TODO: Would this be faster as an iterative algorithm?
-            let matrix_squared = matrix_multiply_2x2(&matrix, &matrix);
-            let n_div_2 = n / 2;
-            if n % 2 == 0 {
-                matrix_power_2x2(&matrix_squared, n_div_2)
-            } else {
-                matrix_multiply_2x2(&matrix, &matrix_power_2x2(&matrix_squared, n_div_2))
+            let mut z = matrix.clone();
+            let mut result = matrix.clone();
+            let mut i = n - 1;
+
+            while i > 0 {
+                // i divmod 2, can this be done in one op?
+                let bit = i % 2;
+                i /= 2;
+                
+                if bit == 1 {
+                    result = matrix_multiply_2x2(&result, &z);
+                }
+
+                z = matrix_multiply_2x2(&z, &z);
             }
+            result
         }
     }
 }
